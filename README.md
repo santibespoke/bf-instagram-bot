@@ -1,17 +1,17 @@
-# bf-instagram-bot
+# BF Instagram Bot
 
-With this bot you can screpe follower / following user list of a specified target account, and get an excel spdreadsheet including account name, link, number of followers and profile pic.
+With this bot you can screpa follower / following user list of a specified target account, and get an excel spdreadsheet including account name, link, number of followers and profile pic.
 
-## Foder structure
+### Foder structure
 This is the basic folder structure
 ```sh
-- get_followings.py
-- export/
-    - generate_excel.py
-    - requests/
-    - csvs/
-    - xlsx/
-    - images/
+get_followings.py
+generate_excel.py
+export/
+    requests/
+    csvs/
+    xlsx/
+    images/
 ```
 
 ### Logearte con instaloader
