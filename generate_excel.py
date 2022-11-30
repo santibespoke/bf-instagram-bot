@@ -10,6 +10,7 @@ import time
 import random
 import sys
 import re
+import uuid
 
 #<li>
 #	<div class="profile_card">
@@ -214,7 +215,7 @@ create_folder_structure()
 
 
 # Create a workbook and add a worksheet.
-workbook = xlsxwriter.Workbook("./export/xlsx/" +name_target+'.xlsx')
+workbook = xlsxwriter.Workbook("./export/xlsx/" +name_target+'_'+str(uuid.uuid1())+'.xlsx')
 worksheet = workbook.add_worksheet()
 s_row = 0
 s_col = 0
@@ -257,8 +258,8 @@ with open('./export/csvs/'+name_target+'.csv', mode='r') as csv_file:
 			else:
 				print("\n******\nWARNING! This line couldn't be processed!\n******\n")
 
-		if (error_count > 5):
-			print("\nMore than 10 errors received\n\nTerminating...\n")
+		if (error_count > 1):
+			print("\nToo many errors received\n\nTerminating...\n")
 			workbook.close()
 			quit()
 
