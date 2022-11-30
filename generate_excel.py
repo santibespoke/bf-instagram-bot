@@ -139,7 +139,7 @@ def get_pic_url(name):
 
 	else:
 		print("Could not find any previous request")
-		sleep_for = random.randrange(10000, 30000) / 1000 #Time in miliseconds
+		sleep_for = random.randrange(20000, 60000) / 1000 #Time in miliseconds
 		print ("Sleeping for " + str(sleep_for) + " seconds before continuing...")
 		time.sleep(sleep_for)
 		
@@ -206,15 +206,13 @@ def get_pic_url(name):
 
 
 
-
+#Get account name from command arguments
 name_target = sys.argv[1]
 
-
-#Create directories
+#Create required directories
 create_folder_structure()
 
-
-# Create a workbook and add a worksheet.
+#Create a workbook, worksheet, and line controls
 workbook = xlsxwriter.Workbook("./export/xlsx/" +name_target+'_'+str(uuid.uuid1())+'.xlsx')
 worksheet = workbook.add_worksheet()
 s_row = 0
@@ -222,35 +220,38 @@ s_col = 0
 total_lines = 0
 error_count = 0
 
-#Count total lines first
+#Open file and count total lines, to calculate % completed
 with open('./export/csvs/'+name_target+'.csv', mode='r') as csv_file:
 	csv_reader = csv.DictReader(csv_file)
 	for row in csv_reader:
 		total_lines += 1
 print('Total Lines', total_lines + 1)
 
-#Process CSV file
+#Processing the CSV file
 with open('./export/csvs/'+name_target+'.csv', mode='r') as csv_file:
 	csv_reader = csv.DictReader(csv_file)
 	line_count = 0
-
-	
 	
 	for row in csv_reader:
 		if line_count == 0:
 			print('First csv line')
 			line_count += 1
+			#Print excel headers on the first line
 			worksheet.write(s_row, 0, "Image")
 			worksheet.write(s_row, 1, "Username")
 			worksheet.write(s_row, 2, "Followers")
 			worksheet.write(s_row, 3, "Link")
 		else:
+			#Calculate completed percentage
 			completed = int(((line_count * 100) / total_lines))
 			print("Completed: " + str(completed) + '% (line ' + str(line_count) + ' of ' + str(total_lines) + ')')
 			print('Processing user => ' + row["username"])
 			line_count += 1
+
+			#Main function to request profile page, scrape html, download profile pic, and get follower count
 			return_get_pic, followers = get_pic_url(row["username"])
 
+			#Print the line on the spreadsheet
 			if (return_get_pic == True):
 				s_row += 1
 				excel_print_line(row, s_row, worksheet, followers)
@@ -258,6 +259,7 @@ with open('./export/csvs/'+name_target+'.csv', mode='r') as csv_file:
 			else:
 				print("\n******\nWARNING! This line couldn't be processed!\n******\n")
 
+		#Limit the amount of errors
 		if (error_count > 1):
 			print("\nToo many errors received\n\nTerminating...\n")
 			workbook.close()
