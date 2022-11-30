@@ -151,11 +151,15 @@ def get_pic_url(name):
 
 		#add error to error count
 		global error_count
-		if (response.status_code != '200'):
+		if (response.status_code == 200):
+			error_count = 0
+		else:
 			error_count += 1
 			print (response.headers)
+			
 
 		if response.ok:
+			
 			htmlraw=response.text
 			#save request to file
 			with open(filename, "w") as f:
@@ -253,12 +257,11 @@ with open('./export/csvs/'+name_target+'.csv', mode='r') as csv_file:
 			else:
 				print("\n******\nWARNING! This line couldn't be processed!\n******\n")
 
-		if (error_count > 2):
+		if (error_count > 5):
 			print("\nMore than 10 errors received\n\nTerminating...\n")
-			#sys.exit()
+			workbook.close()
 			quit()
 
-		print("\n----\n")
+		print("\n--- Errors: " + str(error_count) + " ---\n")
 		
 
-workbook.close()
